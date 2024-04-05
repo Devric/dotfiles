@@ -1,0 +1,6 @@
+# cmus
+############
+alias cplay="cmus-remote -p"
+alias cnext="cmus-remote -n"
+alias cprev="cmus-remote -r"
+alias cstop="cmus-remote -s"

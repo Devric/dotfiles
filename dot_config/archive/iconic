@@ -1,0 +1,8 @@
+# iconic
+#############
+alias iconic="cc ~/Sites/work/iconic/"
+
+alias solrImport='php -d memory_limit=4g ~/Sites/work/iconic/trunk/bob/cli/index.php --env=dev --module=solr --controller=import --action=import --chunkSize=6000'
+alias aliceWorker='php -d memory_limit=4g ~/Sites/work/iconic/trunk/alice/alice/worker/Worker.php'
+alias schemaUpdate="sudo su - devric -c 'php $PWD/bob/cli/index.php --env=dev --module=maintenance --controller=schema-updater'"
+alias bobUpdate="php -d memory_limit=4G $PWD/bob/cli/index.php --env=dev --module=solr --controller=import --action=update"

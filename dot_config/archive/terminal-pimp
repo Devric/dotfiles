@@ -1,0 +1,18 @@
+# Command Prompt
+#############
+Green='\[\e[0;32m\]'
+BIGreen='\[\e[1;92m\]'
+Blue='\[\e[0;36m\]'
+White='\[\e[0;37m\]'
+Color_Off='\[\e[0m\]'
+
+# prompt color
+export PS1=$Green'⚡  \w'$BIGreen' $(__git_ps1 "(%s)")⚡ \n'$Blue'(~ O_o)> '$Color_Off
+
+# bg color
+export CLICOLOR=1
+export LSCOLORS=GxFxCxDxBxegedabagaced
+
+# set title with current directory name
+# use just ${PWD} to show full path
+PROMPT_COMMAND='echo -ne "\033]0;${PWD##*/}\007"'

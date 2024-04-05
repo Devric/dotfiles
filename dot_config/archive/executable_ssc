@@ -1,0 +1,336 @@
+#!/bin/bash
+# Copyright (C) 2015 Arash Shams <xsysxpert@gmail.com>.
+#
+#   This program is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+CONFIGFILE="$HOME/.ssh/config"
+TEMPFILE="$HOME/.ssh/.ssctemp"
+
+listbox() {
+  while [[ $# -gt 0 ]]
+  do
+    key="$1"
+
+    case $key in
+      -h|--help)
+        echo "choose from list of options"
+        echo "Usage: listbox [options]"
+        echo "Example:"
+        echo "  listbox -t title -o \"option 1|option 2|option 3\" -r resultVariable -a '>'"
+        echo "Options:"
+        echo "  -h, --help                         help"
+        echo "  -t, --title                        list title"
+        echo "  -o, --options \"option 1|option 2\"  listbox options"
+        echo "  -r, --result <var>                 result variable"
+        echo "  -a, --arrow <symbol>               selected option symbol"
+        return 0
+        ;;
+      -o|--options)
+        local OIFS=$IFS;
+        IFS="|";
+        # check if zsh/bash
+        if [ -n "$ZSH_VERSION" ]; then
+          IFS=$'\n' opts=($(echo "$2" | tr "|" "\n"))
+        else
+          IFS="|" read -a opts <<< "$2";
+        fi
+        IFS=$OIFS;
+        shift
+        ;;
+      -t|--title)
+        local title="$2"
+        shift
+        ;;
+      -r|--result)
+        local __result="$2"
+        shift
+        ;;
+      -a|--arrow)
+        local arrow="$2"
+        shift
+        ;;
+      *)
+    esac
+    shift
+  done
+
+  if [[ -z $arrow ]]; then
+    arrow=">"
+  fi
+
+  local len=${#opts[@]}
+
+  local choice=0
+  local titleLen=${#title}
+
+  if [[ -n "$title" ]]; then
+    echo -e "\n  $title"
+    printf "  "
+    printf %"$titleLen"s | tr " " "-"
+    echo ""
+  fi
+
+  draw() {
+    local idx=0 
+    for it in "${opts[@]}"
+    do
+      local str="";
+      if [ $idx -eq $choice ]; then
+        str+="$arrow "
+      else
+        str+="  "
+      fi
+      echo "$str$it"
+      idx=$((idx+1))
+    done
+  }
+
+  move() {
+    for it in "${opts[@]}"
+    do
+      tput cuu1
+    done
+    tput el1
+  }
+
+  listen() {
+    while true
+    do
+      key=$(bash -c "read -n 1 -s key; echo \$key")
+
+      if [[ $key = q ]]; then
+        break
+      elif [[ $key = B ]]; then
+        if [ $choice -lt $((len-1)) ]; then
+          choice=$((choice+1))
+          move
+          draw
+        fi
+      elif [[ $key = A ]]; then
+        if [ $choice -gt 0 ]; then
+          choice=$((choice-1))
+          move
+          draw
+        fi
+      elif [[ $key = "" ]]; then
+        # check if zsh/bash
+        if [ -n "$ZSH_VERSION" ]; then
+          choice=$((choice+1))
+        fi
+
+        if [[ -n $__result ]]; then
+          eval "$__result=\"${opts[$choice]}\""
+        else
+          echo -e "\n${opts[$choice]}"
+        fi
+        break
+      fi
+    done
+  }
+
+  draw
+  listen
+}
+
+if [ ! -f $CONFIGFILE ]; then
+    mkdir -p $HOME/.ssh && touch $CONFIGFILE
+fi
+
+is_integer() {
+    printf "%d" $1 > /dev/null 2>&1
+    return $?
+}
+
+do_check_names() {
+	grep "^Host" $CONFIGFILE | cut -f2- -d " "
+	exit 0
+}
+
+success() {
+	printf "\n  \033[32mSuccess: %s\033[0m\n\n" "$@"
+	# exit 0
+}
+
+error() {
+	printf "\n  \033[31mError: %s\033[0m\n\n" "$@"
+	exit 1
+}
+
+print() {
+	printf "  \033[36m%10s\033[0m : \033[90m%s\033[0m\n" "$1" "$2"
+}
+
+do_add_process() {
+    if [[ "$#" -eq 6 || "$#" -eq 4 ]]; then
+	name=$2
+	username=$3
+	hostname=$4
+	if [[ -n $6 ]]; then
+	    id=$5
+	    port=$6
+	else
+	    port=22
+	fi
+    elif [[ "$#" -eq 5 ]]; then
+	if is_integer $5; then
+	    name=$2
+	    username=$3
+	    hostname=$4
+	    port=$5
+	    
+	else
+	    name=$2
+	    username=$3
+	    hostname=$4
+	    id=$5
+	    port=22
+	fi
+    else
+	error "ssc $1 NAME USERNAME HOSTNAME [IdentityKey] [PORT]"
+    fi
+
+    if [[ $(do_check_names | grep --count "^$name$") != 0 ]]; then
+	error "This name is already used. Try again with another name."
+    fi
+    
+    if [ -n "$id" ]; then
+	cat << EOB >> $CONFIGFILE
+
+Host $name
+	HostName $hostname
+	User $username
+	Port $port
+	IdentityFile $id
+EOB
+    else
+	cat << EOB >> $CONFIGFILE
+
+Host $name
+	HostName $hostname
+	User $username
+	Port $port
+EOB
+    fi
+    success "\"$name\" added successfuly to host list"
+}
+
+do_remove_process() {
+    if [ "$#" != 2 ]; then
+	error "Usage : ssc $1 NAME"
+    fi
+    name=$2
+    if [[ $(do_check_names | grep --count "^$name$") != 0 ]]; then
+	sed -ie "/^Host $name$/,/^$/d" $CONFIGFILE
+	success "\"$name\" Removed successfully"
+    	# exit 0
+    else
+	error "Sorry, \"$name\" is not in list"
+    fi
+}
+
+do_list_process() {
+    if [ -n "$2" ]; then
+     	name=$2
+	if [[ $(do_check_names | grep --count "^$name$") != 0 ]]; then
+		awk -v name="$name" -v green="\033[0;32m" -v reset="\033[0m" -v RS='' 'index($0, name) { for (i = 1; i < NF; i += 2) { printf("%s%s%s: %s%s", green, $i, reset, $(i + 1), (i < NF -2)? "  ": "\n") } exit }' $CONFIGFILE 
+		exit 0
+	else
+		error "Sorry, \"$name\" is not in list"
+	fi
+    else
+	 awk -v name="$name" -v green="\033[0;32m" -v reset="\033[0m" -v RS='' '{ for (i = 1; i < NF; i += 2) { printf("%s%s%s: %s\t%s", green, $i, reset, $(i + 1), (i < NF -2)? "  ": "\n") } }' $CONFIGFILE | column -t
+    fi
+}
+
+do_connect() {
+	name=$1
+	if [[ $(do_check_names | grep --count "^$name$") != 0 ]]; then
+		ssh $1
+		exit 0
+	fi
+}
+
+do_search_process() {
+	name=$2
+	ssc ls | grep $name
+}
+
+do_edit_process() {
+    name=$2
+    if [[ $(do_check_names | grep --count "^$name$") != 0 ]]; then
+        echo "Now, Enter new values ($(ssc | grep -i add | awk -F"-a" '{print $2}'))"
+        read new_name user host identity port
+        do_remove_process remove $name 1>/dev/null
+        do_add_process add $new_name $user $host $identity $port 1>/dev/null
+        success "\"${name}\" successfully edited."
+    else
+        error "Sorry, \"$name\" is not in list"
+    fi
+}
+
+do_show_usage() {
+	print "Add" "ssc add/-a NAME USERNAME HOSTNAME [IdentityKey] [PORT] "
+  print "Edit" "ssc edit/-e NAME"
+	print "Remove" "ssc remove/-r/rm  NAME"
+	print "List" "ssc list/-l/ls [NAME]"
+	print "Search" "ssc search/-s NAME"
+	print "Version" "ssc version/-v"
+	print "Help" "ssc help/-h"
+}
+
+do_show_version() {
+	print "Version" "Version 1.8 Stable"
+	print "Contribute" "Fork me at Github <https://github.com/Ara4Sh/sshconfig>"
+}
+
+
+connect() {
+        items=$(cat $CONFIGFILE | grep 'Host\ ' | awk '{print $2}' | tr '\n' '|')
+        res=$(listbox -o "$items" | tee /dev/tty | tail -n 1)
+        ssh $res
+        exit 0
+}
+
+action=$1
+case $action in
+	add | -a)
+	    do_add_process $@
+	    ;;
+	remove | -r | rm)
+	    do_remove_process $@
+	    ;;
+	list | -l | ls)
+	    do_list_process $@
+	    ;;
+	search | -s)
+	    do_search_process $@
+	    ;;
+	version | -v)
+	    do_show_version
+	    ;;
+        edit | -e)
+            do_edit_process $@
+            ;;
+	help | -h)
+	    do_show_usage
+	    ;;
+	*)
+	    #do_connect $@
+            connect
+	    do_show_usage
+	    echo ""
+	    do_show_version
+	    ;;
+esac
+
+exit 0

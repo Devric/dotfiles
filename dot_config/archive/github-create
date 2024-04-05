@@ -1,0 +1,27 @@
+github-create() {
+  repo_name=$1
+
+  if [ -z "$1" ]
+      then
+          echo "Please add a repo name eg: github-create my-new-repo"
+          return 1
+  fi
+
+  myrepo=$1
+  myname=devric
+
+  curl -u $myname https://api.github.com/user/repos -d '{"name":"${myrepo}"}'
+  echo "git@github.com:$myname/$myrepo.git" | tr -d '\n' | pbcopy
+
+  # echo -n "  Pushing local code to remote ..."
+  echo "git remote add origin git@github.com:$myname/$myrepo.git"
+  echo ""
+
+  echo "For new project: "
+  echo "git push -u origin master"
+  echo ""
+  
+  echo "For existing project: "
+  echo "git push -u origin --all"
+}
+

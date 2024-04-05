@@ -1,0 +1,27 @@
+# skybox ( mounted drive )
+#############
+
+# skybox up (upload only )     # skybox up -d (upload and delete what it doesn't have)
+# skybox down (download only ) # skybox up -d (download and delete what it doesn't have)
+skybox(){
+    case "$1" in
+        "up")                      # $1 is 'up' then upload from cloud
+            case "$2" in
+                "") # only $1 present
+                    rsync -a --progress --size-only --exclude=".DS_Store" --exclude=".swp" --exclude=".Trash"  --exclude="logs/*" --exclude="xmlogs/*" /Users/Devric/Documents/skybox/ /Volumes/devric-dropbox/
+                    ;;
+                "-d") # $1 is 'up' and $2 is '-d'
+                    rsync -a --progress --size-only --delete --exclude=".DS_Store" --exclude=".swp" --exclude=".Trash"  --exclude="logs/*" --exclude="xmlogs/*" /Users/Devric/Documents/dropbox/ /Volumes/devric-dropbox/
+                    ;;
+            esac;;
+        "down")                    # $1 is 'down' than download from cloud
+            case "$2" in
+                "")  # only $1 present
+                    rsync -a --progress --size-only --exclude=".DS_Store" --exclude=".swp" --exclude=".Trash"  --exclude="logs/*" --exclude="xmlogs/*" /Volumes/devric-dropbox/ /Users/Devric/Documents/dropbox/
+                    ;;
+                "-d")  # $1 is '1' and $2 is '2' then --delete
+                    rsync -a --progress --size-only --delete --exclude=".DS_Store" --exclude=".swp" --exclude=".Trash"  --exclude="logs/*" --exclude="xmlogs/*" /Volumes/devric-dropbox/ /Users/Devric/Documents/dropbox/
+                    ;;
+            esac;;
+    esac
+}

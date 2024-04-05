@@ -1,0 +1,60 @@
+function bitbucket-create() {
+
+    if [ -z "$1" ]
+        then
+            echo "Please add a repo name eg: bitbucket-create my-new-repo"
+            return 1
+    fi
+
+    myrepo=$1
+
+
+    # ============================
+    # $BASERURL for bitbucket
+    # ============================
+    baseurl=git@bitbucket.org
+
+    # ============================
+    # Ask user to select username
+    # ============================
+    echo "Select which user:"
+    echo "1) personal"
+    echo "2) ey"
+
+    # ============================
+    # Save the correct user to the variable $myuser
+    # ============================
+    read n
+    case $n in
+     1) myuser=billbox13@gmail.com;;
+     2) myuser=billy.huang@au.ey.com;;
+    esac
+
+    # ============================
+    # ask for Password
+    # ============================
+    read -s -p "Password: " mypass
+
+    # ============================
+    # Capture the curl response, and get owner
+    # ============================
+    owner=$(curl -s --user $myuser:$mypass https://api.bitbucket.org/1.0/repositories/ --data name=$myrepo | jq -r '.owner')
+
+    # ============================
+    # Store URL in paste board
+    # ============================
+    echo $baseurl:$owner/$myrepo.git | tr -d '\n' | pbcopy
+    echo -e "Copied to pasteboard\n\n"
+    echo -e "\n"
+
+    echo "git remote add origin " $baseurl:$owner/$myrepo.git
+    echo ""
+
+    echo "For new project: "
+    echo "git push -u origin master"
+    echo ""
+
+    echo "For existing project: "
+    echo "git push -u origin --all"
+}
+

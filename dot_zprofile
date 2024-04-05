@@ -18,17 +18,7 @@ export PATH="$PATH:/Users/devric/Site/sdk/flutter/bin"
 export PET_GITHUB_ACCESS_TOKEN=$(pass dot/pet/PET_GITHUB_ACCESS_TOKEN)
 export EDITOR='nvim'
 
-source ~/odrive/Dropbox/dotfiles/bash/env
-source ~/odrive/Dropbox/dotfiles/bash/terminal-pimp
-source ~/odrive/Dropbox/dotfiles/bash/process-check
-source ~/odrive/Dropbox/dotfiles/bash/sharelink
-source ~/odrive/Dropbox/dotfiles/bash/fetch
-source ~/odrive/Dropbox/dotfiles/bash/github-create
-source ~/odrive/Dropbox/dotfiles/bash/bitbucket-create
-# source ~/Dropbox/dotfiles/bash/cmus
-# source ~/Dropbox/dotfiles/bash/iconic
-# source ~/Dropbox/dotfiles/bash/skybox
-# source ~/Dropbox/dotfiles/bash/docker
+#source ~/odrive/Dropbox/dotfiles/bash/terminal-pimp
 
 #alias python=/usr/local/bin/python3
 

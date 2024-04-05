@@ -1,0 +1,19 @@
+envUP() {
+    cd ~/Sites/env/
+    vagrant up
+    cd .
+}
+
+envHalt() {
+    cd ~/Sites/env/
+    vagrant halt
+}
+
+envSsh() {
+    cd ~/Sites/env/
+    vagrant ssh
+}
+
+envClean() {
+    sudo echo # > /etc/exports
+}

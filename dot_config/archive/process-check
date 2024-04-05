@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# PROC="nginx mysql ..."
+#process-check() {
+    ## for p in $PROC
+    #for p in $@
+    #do
+    #ps cax | grep $p > /dev/null
+
+    #if [ $? -eq 0 ]; then
+        #echo "Process $p is running."
+    #else
+        #echo "Process $p is not running."
+    #fi
+
+    #done
+#}

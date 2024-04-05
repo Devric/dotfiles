@@ -1,0 +1,135 @@
+#! /bin/bash
+
+# Download a script
+# FROM ~/.scripts file (script like key=value)
+# Eg: fetch jquery underscore
+# from jquery=somewhere.com/jquery.min.js
+function fetch() {
+
+    case $1 in
+        "")
+            # if no argument : show all available script for download
+            cat ~/.scripts | while read LINE ; do
+                echo -e '\033[0;37m'' *' $LINE | cut -d '=' -f1
+                read LINE;
+                echo -e '\033[1;37m'' *' $LINE | cut -d '=' -f1
+            done
+            echo -en '\033[0m'
+            ;;
+
+        selenium)
+            # get the latest selenium link
+            echo '==================='
+            echo 'Find latest version'
+            echo '==================='
+            FILE=$(curl http://docs.seleniumhq.org/download/ | grep 'http://' | grep 'selenium-server-standalone-' | sed 's/.*\"\(.*\)\".*/\1/')
+            DOWNLOAD='NO'
+
+            # checking version
+            # check if file does not exits
+            if [ ! -f ~/tmp/selenium-version.txt ]
+            then
+                echo '=================='
+                echo "No cached selenium"
+                echo '=================='
+                DOWNLOAD='YES'
+            else
+                # check version
+                VERSION=`cat ~/tmp/selenium-version.txt`
+
+                if [ "$FILE" == "$VERSION" ] 
+                then
+                    echo '========================='
+                    echo "Cached selenium available"
+                    echo '========================='
+                    DOWNLOAD='NO'
+                else
+                    echo '=================='
+                    echo "No cached selenium"
+                    echo '=================='
+                    DOWNLOAD='YES'
+                fi
+            fi
+
+            if [ "$DOWNLOAD" == "YES" ]
+            then
+                # download to cache
+                echo '==================='
+                echo "Download it to ~/tmp ${FILE}"
+                echo '==================='
+                cd ~/tmp/
+                curl -O $FILE
+                cd -
+            fi
+
+            # create version cache
+            echo ${FILE} > ~/tmp/selenium-version.txt
+
+            # just get the filename
+            FILE=`echo ${FILE} | cut -d'/' -f5`
+
+            # copy it to current location
+            echo '==================='
+            echo 'copy to current dir'
+            echo '==================='
+            cp ~/tmp/${FILE} ./${FILE}
+            ;;
+
+        *)
+            # download each argument
+            for PACKAGE in $*
+            do
+                curl -O $( grep ^$PACKAGE ~/.scripts | cut -d'=' -f2 )
+            done
+            ;;
+    esac
+}
+
+# OLD
+function get() {
+
+    PS3="Hurry the fuck up and choose:"
+
+    ######## Define options ########
+    options=(
+        "Extjs"
+        "Option3"
+        "Quit"
+    )
+    select opt in "${options[@]}"
+    do
+        case $opt in
+            "Extjs")
+                echo "Name of the app?"
+                read $1 dirname
+
+                # setting dir name
+                if [ -n "$dirname" ]; then
+                    DIR=$dirname
+                else
+                    DIR="extapp"
+                fi
+
+                # creating dir and files
+                mkdir -p $DIR/app/model
+                mkdir -p $DIR/app/store
+                mkdir -p $DIR/app/view
+                mkdir -p $DIR/asset/js
+                mkdir -p $DIR/asset/css
+                mkdir -p $DIR/asset/img
+                touch $DIR/app.js $DIR/index.html
+                rsync -r --progress /Users/devric/Sites/repo/js/extjs-4.1.1/ $DIR/extjs
+
+                cc $DIR
+                mvim
+
+                break
+                ;;
+            "Quit")
+                break
+                ;;
+            *) echo invalid option;;
+        esac
+    done
+}
+

@@ -1,0 +1,4 @@
+sharelink() {
+    url=$(echo $1 | sed 's/www.dropbox.com/dl.dropboxusercontent.com/g' | tr -d '\n')
+    echo "$url"
+}

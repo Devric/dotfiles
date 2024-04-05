@@ -1,0 +1,61 @@
+[[snippets]]
+  description = "tar extract .tar.gz"
+  command = "tar -zxvf <file>"
+  output = ""
+
+[[snippets]]
+  description = "Run Jenkins container"
+  command = "docker run --name jenkins -d  --env JAVA_OPTS=\"-Djava.util.logging.config.file=/var/jenkins_home/log.properties\" -v `pwd`/jenkins_home:/var/jenkins_home -p 8080:8080 -p 50000:50000 jenkins/jenkins"
+  tag = ["docker", "jenkins", "devops"]
+  output = ""
+
+[[snippets]]
+  description = "Run Mysql local container, update driver property allowPublicKeyRetrieval=true"
+  command = "docker run -p 3306:3306 --name mysql -e MYSQL_ROOT_PASSWORD=1234 -d mysql"
+  tag = ["docker", "mysql", "db"]
+  output = ""
+
+[[snippets]]
+  description = "Run postgres container with user 'postgres'"
+  command = "docker run --name postgresql-container -p 5432:5432 -e POSTGRES_PASSWORD=1234 -d postgres"
+  tag = ["docker", "postgres", "db"]
+  output = ""
+
+[[snippets]]
+  description = "Run cassandra container"
+  command = "docker run --name cassandra -d -p 9042:9042 cassandra"
+  tag = ["docker", "cassandra", "db"]
+  output = ""
+
+[[snippets]]
+  description = "fzf with preview"
+  command = "fzf -i --cycle --reverse --preview-window=right:65%:wrap --preview='bat --color=always --style=numbers --line-range=:500 {}' --bind=down:preview-down --bind=up:preview-up --print-query"
+  output = ""
+
+[[snippets]]
+  description = "kube set namespace"
+  command = "kubectl config set-context --current --namespace=<namespace=default>"
+  tag = ["kube"]
+  output = ""
+
+[[snippets]]
+  description = "Terraria create new world (size 1=small, 3=large)"
+  command = "sudo docker run -it -p 7777:7777 --rm -v $HOME/terraria/world:/root/.local/share/Terraria/Worlds ryshe/terraria:<img_version=vanilla-1.4.4.5> -world /root/.local/share/Terraria/Worlds/<world_name=jumbomumbo>.wld -autocreate <world_size=3>"
+  tag = ["terraria", "game"]
+  output = ""
+
+[[snippets]]
+  description = "Terraria run existing world"
+  command = "sudo docker run -d --rm -p 7777:7777 -v $HOME/terraria/world:/root/.local/share/Terraria/Worlds --name=<world=terraria> -e WORLD_FILENAME=<world_file=jumbomumbo.wld> ryshe/terraria:<img_version=vanilla-1.4.4.5>"
+  tag = ["terraria", "game"]
+  output = ""
+
+[[snippets]]
+  description = "docker cmd - remove lingering imgs"
+  command = "docker rmi -f $(docker images --filter='dangling=true' -q)"
+  output = ""
+
+[[snippets]]
+  description = "Delete all node_modules folder in nested directory"
+  command = "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +"
+  output = ""

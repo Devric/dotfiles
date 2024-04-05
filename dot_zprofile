@@ -1,0 +1,401 @@
+eval "$(/opt/homebrew/bin/brew shellenv)"
+
+export PATH=$PATH:/usr/local/bin
+export PATH=/usr/local/sbin:$PATH
+export PATH=$PATH:/usr/local/mysql/bin
+export PATH=$PATH:/Developer/usr/bin
+export PATH=/opt/local/bin:/opt/local/sbin:$PATH
+export PATH=/usr/local/share/npm/bin:$PATH
+export PATH=/Users/devric/bin/Sencha/Cmd/4.0.2.67:$PATH
+export NODE_PATH=/usr/local/lib/jsctags/:$NODE_PATH
+export ANDROID_HOME=${HOME}/Library/Android/sdk
+export PATH=${PATH}:${ANDROID_HOME}/tools
+export PATH=${PATH}:${ANDROID_HOME}/platform-tools
+export PATH="$PATH:/Users/devric/Sites/sdk/flutter/bin"
+export PATH="$PATH:/Users/devric/Site/sdk/flutter/bin"
+
+# PET
+export PET_GITHUB_ACCESS_TOKEN=$(pass dot/pet/PET_GITHUB_ACCESS_TOKEN)
+export EDITOR='nvim'
+
+source ~/odrive/Dropbox/dotfiles/bash/env
+source ~/odrive/Dropbox/dotfiles/bash/terminal-pimp
+source ~/odrive/Dropbox/dotfiles/bash/process-check
+source ~/odrive/Dropbox/dotfiles/bash/sharelink
+source ~/odrive/Dropbox/dotfiles/bash/fetch
+source ~/odrive/Dropbox/dotfiles/bash/github-create
+source ~/odrive/Dropbox/dotfiles/bash/bitbucket-create
+# source ~/Dropbox/dotfiles/bash/cmus
+# source ~/Dropbox/dotfiles/bash/iconic
+# source ~/Dropbox/dotfiles/bash/skybox
+# source ~/Dropbox/dotfiles/bash/docker
+
+#alias python=/usr/local/bin/python3
+
+# overwrite cat to use bat for synctax highting
+alias cat="bat"
+
+#  special chrome disables CORS
+alias chrome="open -a Google\ Chrome --args --disable-web-security --user-data-dir"
+
+# change mac vim to be the default editor
+# fucked up on mac
+alias vi='nvim'
+
+# supercharge fzf
+# https://medium.com/@crashybang/supercharge-vim-with-fzf-and-ripgrep-d4661fc853d2
+## --files: List files that would be searched but do not search
+## --no-ignore: Do not respect .gitignore, etc...
+## --hidden: Search hidden files and folders
+## --follow: Follow symlinks
+## --glob: Additional conditions for search (in this case ignore everything in the .git/ folder)
+export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow --glob "!.git/*"'
+
+alias l='ranger'
+
+# open both hosts and conf
+alias hosts="sudo vi -O /etc/apache2/users/devric.conf /etc/hosts"
+alias logs="cc /var/log"
+
+# shortcuts
+############
+# alias profile="mvim /Users/Devric/.profile"
+# alias vimrc="mvim /Users/Devric/.vimrc"
+
+
+# process grep
+pg() {
+    ps aux | grep $1
+}
+
+# fasd quick jumping around
+###########
+eval "$(fasd --init auto)"
+alias za='fasd -a'       # directory
+alias z='fasd_cd -d'     # cd, same functionality as j in autojump
+alias zz='fasd_cd -d -i' # cd with interactive selection
+
+# create
+############
+create() {
+    DIR=/Users/devric/Sites
+    case "$1" in
+        "test")
+            cd $DIR/test
+            mkdir $2
+            cd $2
+        ;;
+        "project")
+            cd $DIR/projects
+            mkdir $2
+            cd $2
+        ;;
+    esac
+}
+
+# fake wget for mac
+#alias wget="curl -O"
+
+alias ~="cd"
+alias cb="cd -"
+alias ..="cd ..&& ls"
+alias ...="cd ../.. && ls"
+alias ....="cd ../../.. && ls"
+alias .....="cd ../../../.. && ls"
+alias ......="cd ../../../../.. && ls"
+cc() { # cd and show files
+    cd $1
+    ls
+}
+
+alias site="cc ~/Sites/"
+alias work="cc ~/Sites/work/"
+alias ey="cc ~/Sites/work/EY/"
+
+alias ls='lsd'
+alias ll="ls -al"
+alias lc="clear && ls -al"
+
+alias h="history"
+alias _="sudo"
+
+# grep the filename and the line
+greplines() {
+    grep -nr $1 *
+}
+
+# grep file names that contians string
+grepfiles() {
+    grep -nr $1 * | cut -d: -f1 -f2
+}
+
+# grep text of a region 12 below 12 above line number
+# $1 : filename
+# $2 : search term
+grepregion() {
+    # Old version{
+    #     BELOW=$(expr $2 - 12 )
+    #     ABOVE=$(expr $2 + 12 )
+
+    #     if [ $BELOW -lt 1 ]; then
+    #         BELOW=1
+    #     fi
+
+    #     awk 'NR==v1, NR==v2' v1=$BELOW v2=$ABOVE  $1
+    # }
+    grep -C 12 -n $2 $1
+}
+
+# grep colour hightlighting
+GREP_OPTIONS='--color=always'
+export GREP_OPTIONS
+export GREP_COLOR='1;35;40'
+
+GREP_OPTIONS=
+for pattern in .cvs .git .hg .svn; do
+    GREP_OPTIONS="$GREP_OPTIONS --exclude-dir=$pattern"
+done
+export GREP_OPTIONS
+
+
+# data url from image
+############
+dataurl() {
+    echo "data:image/${1##*.};base64,$(openssl base64 -in "$1")" | tr -d '\n'
+}
+
+# dir
+############
+mkd() {
+    mkdir -p "$*"
+    cd "$*"
+}
+rmd() {
+    rm -rf $1
+}
+
+# CAL
+############
+# alias cal="open /Users/Devric/Library/Scripts/newEvent.app"
+# eg: $1$2   $3   $4      $5
+# eg: 5 June 2011 1:02:00 "test event"
+cal() {
+    osascript -e 'tell application "iCal" to make new event at end of calendar 1 with properties {start date:date "'"$1"' '"$2"', '"$3"' '"$4"' AM", summary: "'"$5"'"}'
+}
+
+iconhide () {
+    defaults write com.apple.dock static-only -bool "$1"
+    killall Dock
+}
+
+
+# mocha
+#############
+testmocha() {
+    mocha $1 --compilers coffee:coffee-script -R spec
+}
+
+# git bash directory
+#[ -f /usr/local/etc/bash_completion ] && . /usr/local/etc/bash_completion
+#source ~/.git-prompt.sh
+# right prompt
+RPROMPT='%*'
+
+if type brew &>/dev/null; then
+  FPATH=$(brew --prefix)/share/zsh-completions:$FPATH
+
+  autoload -Uz compinit
+  compinit
+fi
+
+
+
+# take screen shot with CutyCapt
+#############
+shoot() {
+    CutyCapt --url=$1 --out=/Users/devric/Desktop/screen.png
+}
+
+alias updateLocate='sudo /usr/libexec/locate.updatedb'
+
+# tmux
+############
+PS1="$PS1"'$([ -n "$TMUX" ] && tmux setenv TMUXPWD_$(tmux display -p "#D" | tr -d %) "$PWD")' # save path to tmux, enable git/svn/vcs
+
+# style docco
+#############
+alias docsass='styledocco --preprocessor "sass --compass" sass/'
+
+zap() {
+    CURRENT=${PWD}
+    FILE="zap.sh"
+
+    if [ ! -f ${FILE} ];
+    then # keep go up until finding it
+        while [ ! -e "${FILE}" ]; do
+            cd ..
+        done
+        # found it...
+        sh ${FILE}
+        cd $CURRENT
+    else # its in the current folder
+        sh ${FILE}
+        cd $CURRENT
+    fi
+}
+
+# extracct
+# usage : ex <file>
+ex () {
+    if [ -f $1 ] ; then
+        case $1 in
+            *.tar.bz2)        tar xjf $1        ;;
+            *.tar.gz)         tar xzf $1        ;;
+            *.bz2)            bunzip2 $1        ;;
+            *.rar)            unrar x $1        ;;
+            *.gz)             gunzip $1         ;;
+            *.tar)            tar xf $1         ;;
+            *.tbz2)           tar xjf $1        ;;
+            *.tgz)            tar xzf $1        ;;
+            *.zip)            unzip $1          ;;
+            *.Z)              uncompress $1     ;;
+            *.7z)             7z x "$1"         ;;
+            *)                echo "'$1' cannot be extracted via extract()" ;;
+        esac
+    else
+        echo "'$1' is not a valid file"
+    fi
+}
+
+# vi like open file, automatically deciding root permission
+function e() {
+#  f="$1"
+#
+#  if [[ -w "$f" ]]; then
+#    "$EDITOR" -- "$f"
+#  else
+#    sudo -e -- "$f"
+#  fi
+	fzf --preview='bat --color=always --line-range=:500 --style=numbers {}' | xargs -r -I % $EDITOR %
+}
+
+# @description  use the google API to translate text
+# @param    $1|$text               text to translate
+# @param    $2|$sourceLang   text to translate
+# @param    $3|$targetLang    text to translate
+# @reutrn    string
+function translate() {
+    text="$1"
+    sourceLang="${2:-en}"
+    targetLang="${3:-ch-FR}"
+    apiQueryString="$(printf "client=t&text=%s&hl=en&sl=%s&tl=%s&ie=UTF-8&oe=UTF-8&multires=1&prev=btn&ssel=0&tsel=0&sc=1" "$text" "$sourceLang" "$targetLang")"
+    url="'http://translate.google.com/translate_a/t?$apiQueryString'"
+    raw="$(curl -A "Mozilla/5.0" $url)"
+
+    echo $raw
+}
+
+# kill the process port TCP:$1
+# @param $1 | port
+function killport() {
+	# # old, by manully give port #
+    # portprocess=$(lsof -i TCP:$1 | grep '[0-9]' | awk '{print $2}')
+    # kill $portprocess
+
+	# using fzf to find, kill selected
+	kill $(lsof -i | grep '[0-9]' | fzf | awk '{print($2)}')
+}
+
+fkilsof -i TCP:ll() {kill $(ps aux | fzf | awk '{print($2)}')}
+
+# open a directory of selected file
+o() {
+   local file
+   local dir
+   file=$(fzf +m -q "$1") && dir=$(dirname "$file") && open "$dir"
+}
+
+gdiff() {
+	preview="git diff $@ --color=always -- {-1}"
+	git diff $@ --name-only | fzf -m --ansi --preview $preview
+}
+
+notes() {
+	fd . ~/odrive/Dropbox/protected/nationvelocity | fzf --preview='bat --color=always --line-range=:500 --style=numbers {}' --delimiter / --with-nth -1 --bind='ctrl-y:execute-silent(pbcopy <<< $(cat {}))+abort' | xargs -r -I % $EDITOR %
+
+	# The following does copy path
+	# fd . ~/odrive/Dropbox/protected/nationvelocity | fzf --preview='bat --color=always --line-range=:500 --style=numbers {}' --delimiter / --with-nth -1 --bind='ctrl-y:execute-silent(pbcopy <<< {})+abort' | xargs -r -I % $EDITOR %
+}
+
+
+# recursively get all 'file' and do find and replace
+# @param $1 findThis
+# @param $2 replaceWithThis
+function recursiveReplace() {
+    find . -type f -exec sed -i '' -e "s/$1/$2/g" {} +
+}
+
+## Replaced by jenv http://www.jenv.be/
+## # JDK versions
+## # EG:  setdjk 1.7
+## function setjdk() {
+##   if [ $# -ne 0 ]; then
+##    removeFromPath '/System/Library/Frameworks/JavaVM.framework/Home/bin'
+##    if [ -n "${JAVA_HOME+x}" ]; then
+##     removeFromPath $JAVA_HOME
+##    fi
+##    export JAVA_HOME=`/usr/libexec/java_home -v $@`
+##    export PATH=$JAVA_HOME/bin:$PATH
+##   fi
+##   echo JAVA_HOME set to $JAVA_HOME
+##   java -version
+## }
+## 
+# export PATH="$HOME/.jenv/bin:$PATH"
+# eval "$(jenv init -)"
+
+# get folder size of currenty directory
+foldersize() {
+    du -s ./* | sort -n | cut -f 2- | xargs -Ix du -sh x
+}
+
+# tar gz
+pack() {
+    tar -zcf $1.tar.gz $1
+}
+
+alias dockerx="docker -H=ssh://devric@192.168.0.136:2222"
+
+# pet -- commandline snippet
+##############################
+alias pets="pet list"
+alias petrun="pet search"
+# uses glow to display markdown
+function petdoc () {
+	cmd=`pet search`
+	if [[ "$cmd" == "#"* ]]
+	then
+		echo "$cmd" | glow -
+	else
+		echo "$cmd" | pbcopy
+	fi
+}
+function petadd() {
+  PREV=$(fc -lrn | head -n 1)
+  sh -c "pet new `printf %q "$PREV"`"
+}
+# pet -- copy
+function petget() {
+    pet search | pbcopy
+}
+
+# zsh update same config as bash
+bindkey -e
+bindkey \^U backward-kill-line
+bindkey '^A' beginning-of-line
+bindkey '^E' end-of-line
+bindkey '^U' backward-kill-line
+
+
+# Added by OrbStack: command-line tools and integration
+source ~/.orbstack/shell/init.zsh 2>/dev/null || :

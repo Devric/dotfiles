@@ -1,0 +1,21 @@
+[General]
+  snippetfile = "/Users/devric/.config/pet/snippet.toml"
+  editor = "nvim"
+  column = 40
+  selectcmd = "fzf --ansi"
+  backend = "gist"
+  sortby = ""
+
+[Gist]
+  file_name = "pet-snippet.toml"
+  gist_id = "87e3ad80353b345c3e6cbe037f84d72f"
+  public = false
+  auto_sync = true
+
+[GitLab]
+  file_name = "pet-snippet.toml"
+  access_token = ""
+  url = ""
+  id = ""
+  visibility = "private"
+  auto_sync = false

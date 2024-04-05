@@ -1,0 +1,64 @@
+[env]
+TERM = "xterm-256color"
+
+[window]
+dynamic_padding = false
+decorations = "buttonless"
+opacity = 0.4
+blur = true
+
+  [window.dimensions]
+  columns = 140
+  lines = 38
+
+  [window.padding]
+  x = 10
+  y = 10
+
+[font]
+size = 15.5
+
+  [font.normal]
+  family = "Hack Nerd Font"
+
+  [font.bold]
+  family = "Hack Nerd Font"
+
+  [font.italic]
+  family = "Hack Nerd Font"
+  style = "Medium Italic"
+
+# [normal]
+# black = "0x000000"
+# red = "0xc62828"
+# green = "0x558b2f"
+# yellow = "0xf9a825"
+# blue = "0x1565c0"
+# magenta = "0x6a1e9a"
+# cyan = "0x00838f"
+# white = "0xf2f2f2"
+# 
+#   [[normal.key_bindings]]
+#   key = "Up"
+#   mods = "Alt"
+#   chars = "\u001b[1;5A"
+# 
+#   [[normal.key_bindings]]
+#   key = "Down"
+#   mods = "Alt"
+#   chars = "\u001b[1;5B"
+# 
+#   [[normal.key_bindings]]
+#   key = "Left"
+#   mods = "Alt"
+#   chars = "\u001bb"
+# 
+#   [[normal.key_bindings]]
+#   key = "Right"
+#   mods = "Alt"
+#   chars = "\u001bf"
+# 
+#   [[normal.key_bindings]]
+#   key = "c"
+#   mods = "Alt"
+#   chars = "\u001bc"

@@ -21,8 +21,10 @@ packages:
     - 'fasd'
     - 'tree'
     - 'gitui'
-    - 'font-inconsolata'
     casks:
     - 'alacritty'
     - 'font-hack-nerd-font'
     - 'azure-data-studio'
+    - 'zed'
+    - 'orbstack'
+    - 'logseq'

@@ -1,0 +1,28 @@
+packages:
+  darwin:
+    brews:
+    - 'git'
+    - 'neovim'
+    - 'lsd'
+    - 'rg'
+    - 'node'
+    - 'the_silver_searcher'
+    - 'fzf'
+    - 'git-extras'
+    - 'wget'
+    - 'youtube-dl'
+    - 'tmux'
+    - 'tmuxp'
+    - 'reattach-to-user-namespace'
+    - 'pass'
+    - 'knqyf263/pet/pet'
+    - 'fd'
+    - 'ranger'
+    - 'fasd'
+    - 'tree'
+    - 'gitui'
+    - 'font-inconsolata'
+    casks:
+    - 'alacritty'
+    - 'font-hack-nerd-font'
+    - 'azure-data-studio'

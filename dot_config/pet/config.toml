@@ -12,6 +12,7 @@
   public = false
   auto_sync = true
 
+
 [GitLab]
   file_name = "pet-snippet.toml"
   access_token = ""

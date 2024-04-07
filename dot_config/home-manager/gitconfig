@@ -1,0 +1,90 @@
+[usr]
+    name = Devric
+[user]
+	email = billbox13@gmail.com
+	name = Devric
+[color]
+    diff = auto
+    status = auto
+    branch = auto
+    ui = auto
+[color "branch"]
+    current = yellow reverse
+    local = yellow
+    remote = green
+[color "diff"]
+    meta = yellow bold
+    frag = magenta bold
+    old = red bold
+    new = green bold
+[color "status"]
+    added = green
+    changed = yellow
+    untracked = cyan
+
+[core]
+    excludesfile = /Users/devric/.gitignore_global
+    editor = /usr/bin/nvim
+
+[alias]         #gegen tippfehler im terminal
+    i = init
+    a = add
+    b = branch
+    c = commit -m
+    o = checkout
+    s = status
+    dc = diff --cached
+
+    lg  = log --graph --decorate --pretty=format:"%C(yellow)%h%x09%C(green)%an%x09%cr%x09%C(white)%s"
+    lgs = log --graph --decorate --pretty=format:"%C(yellow)%h%x09%C(green)%an%x09%cr%x09%C(white)%s" --stat
+
+    lo  = log --graph --decorate --pretty=oneline --abbrev-commit
+    los = log --graph --decorate --pretty=oneline --abbrev-commit --stat
+
+    lup = log --branches --not --remotes --oneline
+
+    serve  = "daemon --verbose --export-all --base-path=.git --reuseaddr --strict-paths .git/"
+
+        ;git flow
+    fi = flow init
+    ffs = flow feature start
+    fff = flow feature finish
+    ffp = flow feature publish
+    frs = flow release start
+    frf = flow release finish
+    fhs = flow hotfix start
+    fhf = flow hotfix finish
+
+    delete-merged-branches = "!f() { git checkout --quiet master && git branch --merged | grep --invert-match '\\*' | xargs -n 1 git branch --delete; git checkout --quiet @{-1}; }; f"
+
+[github]
+    user = devric
+
+[push]
+    default = simple
+
+[diff]
+    tool = Kaleidoscope
+[difftool "Kaleidoscope"]
+    cmd = ksdiff --partial-changeset --relative-path \"$MERGED\" -- \"$LOCAL\" \"$REMOTE\"
+[merge]
+    tool = Kaleidoscope
+[mergetool "Kaleidoscope"]
+    cmd = ksdiff --merge --output \"$MERGED\" --base \"$BASE\" -- \"$LOCAL\" --snapshot \"$REMOTE\" --snapshot
+    trustExitCode = true
+[difftool "sourcetree"]
+	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+	path = 
+[mergetool "sourcetree"]
+	cmd = /Applications/Sourcetree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+	trustExitCode = true
+[mergetool "vimdiff"]
+    conflictstyle = diff3
+    prompt = false
+[pull]
+	ff = only
+[filter "lfs"]
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+	clean = git-lfs clean -- %f

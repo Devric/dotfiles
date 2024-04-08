@@ -161,4 +161,5 @@ ctrl + cmd - s : yabai -m window --toggle sticky;\
 ctrl + cmd - r : yabai --restart-service
 
 ctrl + cmd - t : open -na alacritty
-ctrl + cmd - b : open -a arc
+ctrl + cmd - b : open -a brave
+ctrl + cmd - f : open -a finder

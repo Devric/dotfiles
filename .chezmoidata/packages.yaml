@@ -15,10 +15,10 @@ packages:
     - 'tmuxp'
     - 'reattach-to-user-namespace'
     - 'pass'
-    - 'knqyf263/pet/pet'
+    - 'knqyf263/pet'
     - 'fd'
     - 'ranger'
-    - 'fasd'
+    - 'zoxide'
     - 'tree'
     - 'gitui'
     casks:

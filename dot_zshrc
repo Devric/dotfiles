@@ -19,6 +19,8 @@ export PATH="$PNPM_HOME:$PATH"
 # setup thefuck
 eval $(thefuck --alias)
 
+eval "$(starship init zsh)"
+
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,

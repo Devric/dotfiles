@@ -58,12 +58,10 @@ pg() {
     ps aux | grep $1
 }
 
-# fasd quick jumping around
+# zoxide quick jumping around
 ###########
-eval "$(fasd --init auto)"
-alias za='fasd -a'       # directory
-alias z='fasd_cd -d'     # cd, same functionality as j in autojump
-alias zz='fasd_cd -d -i' # cd with interactive selection
+eval "$(zoxide init zsh)"
+# z, zi
 
 # create
 ############

@@ -4,3 +4,7 @@ to automatic brew installing
 in this folder/file, add brew packages
 .chezmoidata/package.yaml
 
+
+# these has no Brew yet
+RESH - context aware CTRL+R for history search
+curl -fsSL https://raw.githubusercontent.com/curusarn/resh/master/scripts/rawinstall.sh | bash

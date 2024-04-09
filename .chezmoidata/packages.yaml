@@ -35,4 +35,5 @@ packages:
     - 'visual-studio-code'
     - 'zed'
     - 'orbstack'
+    - 'raycast'
     - 'logseq'

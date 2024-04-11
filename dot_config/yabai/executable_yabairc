@@ -25,7 +25,7 @@ yabai -m config window_shadow                on
 yabai -m config window_opacity               off
 yabai -m config window_opacity_duration      0.0
 yabai -m config active_window_opacity        1.0
-yabai -m config normal_window_opacity        0.90
+yabai -m config normal_window_opacity        0.7
 yabai -m config window_border                off
 yabai -m config window_border_width          6
 yabai -m config active_window_border_color   0xff775759
@@ -45,6 +45,11 @@ yabai -m config bottom_padding               5
 yabai -m config left_padding                 5
 yabai -m config right_padding                5
 yabai -m config window_gap                   15
+
+# animations & candy
+yabai -m config window_shadow                on
+yabai -m config window_animation_duration    0.25
+yabai -m config window_animation_easing      ease_out_circ
 
 ### ======= END NOTCH / NO NOTCH GAP
 # yabai -m query --displays

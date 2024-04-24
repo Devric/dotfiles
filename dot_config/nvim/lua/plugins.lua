@@ -42,10 +42,31 @@ require('packer').startup(function()
 		requires = {'nvim-tree/nvim-web-devicons'}
 	}
 	use {
+		'folke/noice.nvim',
+		requires = {
+			"MunifTanjim/nui.nvim",
+			"rcarriga/nvim-notify",
+		},
+		config = function()
+			require("noice").setup({
+
+			})
+		end,
+	}
+	use {
 		'nvim-tree/nvim-tree.lua',
 		requires = 'nvim-tree/nvim-web-devicons',
 		config = function() require'nvim-tree'.setup {} end
 	}
+
+	-- Replacing nvim-tree
+	use({
+		"stevearc/oil.nvim",
+		config = function()
+			require("oil").setup()
+		end,
+	})
+
 	use {
 		'norcalli/nvim-colorizer.lua',
 		config = function()
@@ -53,9 +74,8 @@ require('packer').startup(function()
 		end
 	}
 
-	use 'tomlion/vim-solidity'
+	-- use 'tomlion/vim-solidity'
 	use 'mattn/emmet-vim'
-
 
 	use {
 		"luukvbaal/stabilize.nvim",
@@ -114,7 +134,14 @@ require('packer').startup(function()
 		requires = {
 			'vijaymarupudi/nvim-fzf',
 			'nvim-tree/nvim-web-devicons'
-		}
+		},
+		config = function()
+			require"fzf-lua".setup({
+				-- "fzf-vim",
+				"fzf-native",
+				winopts={preview={default="bat"}}
+			})
+		end
 	}
 	use {
 		"https://github.com/ur4ltz/surround.nvim",
@@ -187,7 +214,20 @@ require('packer').startup(function()
 		"williamboman/mason-lspconfig.nvim",
 		'neovim/nvim-lspconfig'
 	}
-	use 'simrat39/symbols-outline.nvim'
+	-- DEPRECATED use outline use 'simrat39/symbols-outline.nvim'
+	use {
+		"hedyhli/outline.nvim",
+		config = function()
+			-- -- Example mapping to toggle outline
+			-- vim.keymap.set("n", "<leader>o", "<cmd>Outline<CR>",
+			-- 	{ desc = "Toggle Outline" })
+
+			require("outline").setup {
+				-- Your setup opts here (leave empty to use defaults)
+			}
+		end
+	}
+
 	use { 'tami5/lspsaga.nvim' } -- tami5 fix the issue of codeaction popup when theres no action, 'glepnir/lspsaga.nvim' not maintaned
 	use {"ms-jpq/coq_nvim", branch = "coq"}
      	use {"ms-jpq/coq.artifacts", branch = 'artifacts'}

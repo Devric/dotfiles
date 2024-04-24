@@ -58,9 +58,14 @@ end
 -- Plugin: NvimTree
 -- ====================================
 map('', '<F1>', '<cmd>NvimTreeToggle<CR>')
+
 -- Plugin: symbolsoutline
 -- ====================================
-map('n', '<F2>', ":SymbolsOutline<CR>")
+map('n', '<F2>', ":Outline<CR>")
+
+-- Plugin: Oil
+-- ====================================
+map('n', '<F4>', ":Oil<CR>")
 
 -- Plugin: hopword (vim motion)
 -- ====================================
@@ -82,9 +87,10 @@ map('v', '<Space>', ":Tabularize /")
 
 -- Plugin: fzf, fzflua
 -- ====================================
-map('n', '<leader>x', ":FZF<CR>")
+map('n', '<leader>x', "<cmd>lua require('fzf-lua').files()<CR>")
 map('n', '<leader>X', ":FzfLua<CR>")
 map('n', '<leader>B', "<CMD>FzfLua buffers<CR>")
+map('n', '<leader>g', "<cmd>lua require('fzf-lua').live_grep()<CR>")
 
 
 -- Plugin: LSP, lspsaga, trouble, coq

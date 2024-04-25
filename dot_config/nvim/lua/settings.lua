@@ -10,8 +10,6 @@ local indent = 4
 
 cmd 'syntax enable'
 cmd 'filetype plugin indent on'
-cmd 'colorscheme gruvbox'
-cmd "let g:gruvbox_contrast = 'soft'"
 
 settings('b', 'shiftwidth', indent)
 settings('b', 'tabstop', indent)
@@ -35,14 +33,21 @@ settings('w', 'cursorcolumn', true)
 settings('o', 'clipboard','unnamed,unnamedplus')
 
 vim.opt.wildignore = '.svn,CVS,.git,*.o,*.a,*.class,*.mo,*.la,*.so,*.obj,*.swp,*.jpg,*.png,*.xpm,*.gif'
-vim.cmd("let g:coq_settings = { 'auto_start': 'shut-up' }")
+-- vim.cmd("let g:coq_settings = { 'auto_start': 'shut-up' }")
 
+
+-- splitkeep to replace stablize
+vim.cmd('set splitkeep=screen')
 
 -- settings('w', 'relativenumber', true)
 -- settings('b', 'expandtab', true) -- use space instead of tabs
 
+
+-- NOTE below ORDER matters
+
 -- HigC-- on yank
 vim.cmd 'au TextYankPost * lua vim.highlight.on_yank {on_visual = false}'
+
 
 -- transparent background go with the terminal transparency
 settings('o', 'termguicolors',true) -- does not work with some terminal, it will become black and white
@@ -51,3 +56,6 @@ vim.cmd 'hi! NonText ctermbg=NONE guibg=NONE'
 vim.cmd 'hi! SignColumn ctermbg=NONE guibg=NONE'
 vim.cmd 'hi! LineNr ctermbg=NONE guibg=NONE'
 
+cmd 'colorscheme gruvbox'
+cmd "let g:gruvbox_contrast = 'soft'"
+vim.cmd 'hi! Normal ctermbg=NONE guibg=NONE'

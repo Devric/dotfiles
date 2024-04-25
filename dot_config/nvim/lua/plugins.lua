@@ -41,22 +41,27 @@ require('packer').startup(function()
 		'romgrk/barbar.nvim',
 		requires = {'nvim-tree/nvim-web-devicons'}
 	}
-	use {
-		'folke/noice.nvim',
-		requires = {
-			"MunifTanjim/nui.nvim",
-			"rcarriga/nvim-notify",
-		},
-		config = function()
-			require("noice").setup({
+	-- use {
+	-- 	'folke/noice.nvim',
+	-- 	requires = {
+	-- 		"MunifTanjim/nui.nvim",
+	-- 		"rcarriga/nvim-notify",
+	-- 	},
+	-- 	config = function()
+	-- 		require("noice").setup({
 
-			})
-		end,
-	}
+	-- 		})
+	-- 	end,
+	-- }
 	use {
 		'nvim-tree/nvim-tree.lua',
 		requires = 'nvim-tree/nvim-web-devicons',
 		config = function() require'nvim-tree'.setup {} end
+	}
+
+	use {
+		"lukas-reineke/indent-blankline.nvim",
+		config = function() require'ibl'.setup {} end
 	}
 
 	-- Replacing nvim-tree
@@ -77,10 +82,11 @@ require('packer').startup(function()
 	-- use 'tomlion/vim-solidity'
 	use 'mattn/emmet-vim'
 
-	use {
-		"luukvbaal/stabilize.nvim",
-		config = function() require("stabilize").setup() end
-	}
+	-- Deprecated https://github.com/neovim/neovim/pull/19243
+	-- use {
+	-- 	"luukvbaal/stabilize.nvim",
+	-- 	config = function() require("stabilize").setup() end
+	-- }
 
 	-- UTILITY
 	use 'AndrewRadev/splitjoin.vim'
@@ -158,6 +164,25 @@ require('packer').startup(function()
 			require('gitsigns').setup()
 		end
 	}
+
+
+	use {
+		"ThePrimeagen/harpoon",
+		branch = "harpoon2",
+		requires = { {"nvim-lua/plenary.nvim"} },
+		config = function()
+			local harpoon = require "harpoon"
+
+			harpoon:setup()
+
+			vim.keymap.set("n", "<leader>a", function() harpoon:list():add() end)
+			vim.keymap.set("n", "<C-e>", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
+
+			-- Toggle previous & next buffers stored within Harpoon list
+			vim.keymap.set("n", "<S-Left>", function() harpoon:list():prev() end)
+			vim.keymap.set("n", "<S-Right>", function() harpoon:list():next() end)
+		end
+	}
 	
 	-- allows quickly select window
 	use 'https://gitlab.com/yorickpeterse/nvim-window.git'
@@ -209,11 +234,33 @@ require('packer').startup(function()
 	}
 
 	-- LSP
+	-- use {
+	-- 	"williamboman/mason.nvim",
+	-- 	"williamboman/mason-lspconfig.nvim",
+	-- 	'neovim/nvim-lspconfig'
+	-- }
+	-- use {"ms-jpq/coq_nvim", branch = "coq"}
+    -- use {"ms-jpq/coq.artifacts", branch = 'artifacts'}
+
+
 	use {
-		"williamboman/mason.nvim",
-		"williamboman/mason-lspconfig.nvim",
-		'neovim/nvim-lspconfig'
+		'VonHeikemen/lsp-zero.nvim',
+		branch = 'v3.x',
+		requires = {
+			{'williamboman/mason.nvim'},
+			{'williamboman/mason-lspconfig.nvim'},
+
+			{'neovim/nvim-lspconfig'},
+
+			{'hrsh7th/nvim-cmp'},
+			{'hrsh7th/cmp-nvim-lsp'},
+			{'hrsh7th/cmp-buffer'},
+			{'hrsh7th/cmp-path'},
+			-- {'L3MON4D3/LuaSnip'},
+			-- {'tami5/lspsaga.nvim'}
+		}
 	}
+
 	-- DEPRECATED use outline use 'simrat39/symbols-outline.nvim'
 	use {
 		"hedyhli/outline.nvim",
@@ -228,9 +275,6 @@ require('packer').startup(function()
 		end
 	}
 
-	use { 'tami5/lspsaga.nvim' } -- tami5 fix the issue of codeaction popup when theres no action, 'glepnir/lspsaga.nvim' not maintaned
-	use {"ms-jpq/coq_nvim", branch = "coq"}
-     	use {"ms-jpq/coq.artifacts", branch = 'artifacts'}
 	use {
 		"folke/trouble.nvim",
 		requires = "nvim-tree/nvim-web-devicons",
@@ -254,8 +298,8 @@ require('packer').startup(function()
 		'abecodes/tabout.nvim',
 		config = function()
 			require('tabout').setup {
-				tabkey = "",
-				backward_tabkey = "",
+				tabkey = "<Tab>",
+				backward_tabkey = "<S-Tab>",
 				tabouts = {
 					{open = "'", close = "'"},
 					{open = '"', close = '"'},
@@ -291,8 +335,8 @@ require('packer').startup(function()
 			vim.api.nvim_set_keymap("i", "<Tab>", "v:lua.tab_binding()", {expr = true})
 			vim.api.nvim_set_keymap("i", "<S-Tab>", "v:lua.s_tab_binding()", {expr = true})
 		end,
-		wants = {'nvim-treesitter'} -- or require if not used so far
-		-- after = {'coq'} -- if a completion plugin is using tabs load it before
+		wants = {'nvim-treesitter'}, -- or require if not used so far
+		after = {'nvim-cmp'}
 	}
 
 

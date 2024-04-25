@@ -55,17 +55,17 @@ close = function ()
    require'nvim-tree'.close()
 end
 
--- Plugin: NvimTree
+-- Plugin: Oil
 -- ====================================
-map('', '<F1>', '<cmd>NvimTreeToggle<CR>')
+map('n', '<F1>', ":Oil<CR>")
 
 -- Plugin: symbolsoutline
 -- ====================================
 map('n', '<F2>', ":Outline<CR>")
 
--- Plugin: Oil
+-- Plugin: NvimTree
 -- ====================================
-map('n', '<F4>', ":Oil<CR>")
+map('', '<F4>', '<cmd>NvimTreeToggle<CR>')
 
 -- Plugin: hopword (vim motion)
 -- ====================================

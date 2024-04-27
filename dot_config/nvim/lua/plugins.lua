@@ -82,6 +82,7 @@ require('packer').startup(function()
 			"nvim-lua/plenary.nvim",
 			"ibhagwan/fzf-lua",
 			"hrsh7th/nvim-cmp",
+			"nvim-tree/nvim-web-devicons",
 		},
 		config = function()
 			-- Using both Logseq + Obsidiant(Logseq/journals folder)
@@ -216,22 +217,13 @@ require('packer').startup(function()
 	
 	-- auto close delimiters
 	use {
-		'steelsojka/pears.nvim', 
+		"windwp/nvim-autopairs",
+		event = "InsertEnter",
 		config = function()
-			require "pears".setup(function(conf)
-				conf.pair = {include = {"<", "<!--"}}
-				-- conf.preset "tag_matching"
-				-- with completion integration
-				conf.on_enter(function(pears_handle)
-					if vim.fn.pumvisible() == 1 and vim.fn.complete_info().selected ~= -1 then
-						vim.cmd[[:startinsert | call feedkeys("\<c-y>")]]
-					else
-						pears_handle()
-					end
-				end)
-			end)
+			require("nvim-autopairs").setup {}
 		end
 	}
+
 	use 'tpope/vim-commentary'
 	use {'kkoomen/vim-doge', run = ":call doge#install()"}
 	use {
@@ -289,7 +281,7 @@ require('packer').startup(function()
 			harpoon:setup()
 
 			vim.keymap.set("n", "<leader>a", function() harpoon:list():add() end)
-			vim.keymap.set("n", "<C-a>", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
+			vim.keymap.set("n", "<C-m>", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
 
 			-- Toggle previous & next buffers stored within Harpoon list
 			vim.keymap.set("n", "<S-Left>", function() harpoon:list():prev() end)
@@ -420,6 +412,19 @@ require('packer').startup(function()
 			list_models = '<omitted lua function>', -- Retrieves a list of model names
 			debug = false -- Prints errors and the command which is run.
 		} end
+	}
+
+	-- AI suggestion
+	use {
+		"Exafunction/codeium.nvim",
+		requires = {
+			"nvim-lua/plenary.nvim",
+			"hrsh7th/nvim-cmp",
+		},
+		config = function()
+			require("codeium").setup({
+			})
+		end
 	}
 
 

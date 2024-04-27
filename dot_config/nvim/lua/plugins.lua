@@ -46,18 +46,7 @@ require('packer').startup(function()
 		'romgrk/barbar.nvim',
 		requires = {'nvim-tree/nvim-web-devicons'}
 	}
-	-- use {
-	-- 	'folke/noice.nvim',
-	-- 	requires = {
-	-- 		"MunifTanjim/nui.nvim",
-	-- 		"rcarriga/nvim-notify",
-	-- 	},
-	-- 	config = function()
-	-- 		require("noice").setup({
 
-	-- 		})
-	-- 	end,
-	-- }
 	use {
 		'nvim-tree/nvim-tree.lua',
 		requires = 'nvim-tree/nvim-web-devicons',
@@ -84,27 +73,146 @@ require('packer').startup(function()
 		end
 	}
 
+
+	use{
+		"epwalsh/obsidian.nvim",
+		tag = "*",  -- recommended, use latest release instead of latest commit
+		requires = {
+			-- Required.
+			"nvim-lua/plenary.nvim",
+			"ibhagwan/fzf-lua",
+			"hrsh7th/nvim-cmp",
+		},
+		config = function()
+			-- Using both Logseq + Obsidiant(Logseq/journals folder)
+			require("obsidian").setup({
+				workspaces = {
+					{
+						name = "logseq",
+						path = "~/odrive/Dropbox/Apps/logseq/journals",
+					},
+				},
+				picker = {
+					name = "fzf-lua",
+					mappings = {
+						-- Create a new note from your query.
+						new = "<C-x>",
+						-- Insert a link to the selected note.
+						insert_link = "<C-l>",
+					},
+				},
+				completion = {
+					-- Set to false to disable completion.
+					nvim_cmp = true,
+					-- Trigger completion at 2 chars.
+					min_chars = 2,
+  				},
+
+				daily_notes = {
+					-- Optional, if you want to change the date format for the ID of daily notes.
+					date_format = "%Y_%m_%d",
+				},
+
+				note_id_func = function(title)
+					-- Create note IDs in a Zettelkasten format with a timestamp and a suffix.
+					-- In this case a note with the title 'My new note' will be given an ID that looks
+					-- like '1657296016-my-new-note', and therefore the file name '1657296016-my-new-note.md'
+					local suffix = ""
+					if title ~= nil then
+						-- If title is given, transform it into valid file name.
+						suffix = title:gsub(" ", "-"):gsub("[^A-Za-z0-9-]", ""):lower()
+					else
+						-- If title is nil, just add 4 random uppercase letters to the suffix.
+						for _ = 1, 4 do
+							suffix = suffix .. string.char(math.random(65, 90))
+						end
+					end
+					return tostring(os.time()) .. "-" .. suffix
+				end,
+
+				mappings = {
+					-- Defaults
+					-- ["gf"] = { }, Overrides the 'gf' mapping to work on markdown/wiki links within your vault.
+					-- ["<leader>ch"] = { }, -- Toggle check-boxes. :ObsidianToggleCheckbox to cycle through checkbox options.
+					-- ["<cr>"] = { } -- Smart action depending on context, either follow link or toggle checkbox. :ObsidianFollowLink [vsplit|hsplit] to follow a note reference under the cursor, optionally opening it in a vertical or horizontal split.
+				},
+			})
+		end,
+	}
+
 	-- use 'tomlion/vim-solidity'
 	use 'mattn/emmet-vim'
-
-	-- Deprecated https://github.com/neovim/neovim/pull/19243
-	-- use {
-	-- 	"luukvbaal/stabilize.nvim",
-	-- 	config = function() require("stabilize").setup() end
-	-- }
 
 	-- UTILITY
 	use 'AndrewRadev/splitjoin.vim'
 	use 'editorconfig/editorconfig-vim'
 
-	--use {
-	--	"folke/which-key.nvim",
-	--	config = function() require("which-key").setup {
-	--		-- your configuration comes here
-	--		-- or leave it empty to use the default settings
-	--		-- refer to the configuration section below
-	--	} end
-	--}
+	use {
+		"folke/which-key.nvim",
+		requires = {
+			"epwalsh/obsidian.nvim",
+		},
+		config = function() 
+			local wk = require("which-key")
+
+
+			-- Required to init whikey
+			wk:setup {}
+
+			-- Bindings
+			wk.register(
+				{
+					[ "<C-Space>" ] = {
+						name = "AWESOME",
+						-- Obsidiant
+						o = {
+							-- :ObsidianYesterday to open/create the daily note for the previous working day.
+							-- :ObsidianTomorrow to open/create the daily note for the next working day.
+							-- :ObsidianDailies [OFFSET ...] to open a picker list of daily notes. For example, :ObsidianDailies -2 1 to list daily notes from 2 days ago until tomorrow.
+							-- :ObsidianTemplate [NAME] to insert a template from the templates folder, selecting from a list using your preferred picker. See "using templates" for more information.
+							-- :ObsidianLinkNew [TITLE] to create a new note and link it to an inline visual selection of text. This command has one optional argument: the title of the new note. If not given, the selected text will be used as the title.
+							-- :ObsidianWorkspace [NAME] to switch to another workspace.
+							-- :ObsidianPasteImg [IMGNAME] to paste an image from the clipboard into the note at the cursor position by saving it to the vault and adding a markdown image link. You can configure the default folder to save images to with the attachments.img_folder option.
+							name = "Obsidiant",
+							o = { function() vim.api.nvim_command(":ObsidianQuickSwitch") end, "Open Notes" },
+							n = { function() vim.api.nvim_command(":ObsidianNew") end, "New Notes [title]" },
+							t = { function() vim.api.nvim_command(":ObsidianTags") end, "Open Tag [tag]" },
+							b = { function() vim.api.nvim_command(":ObsidianBacklinks") end, "List Backlinks" },
+							d = { function() vim.api.nvim_command(":ObsidianToday") end, "Open Today's Note" },
+							s = { function() vim.api.nvim_command(":ObsidianSearch") end, "Search..." },
+							r = { function() vim.api.nvim_command(":ObsidianRename") end, "Rename [New Name]" },
+							l = { function() vim.api.nvim_command(":ObsidianLinks") end, "Open links picker" },
+							L = { function() vim.api.nvim_command(":ObsidianLinkNew") end, "Create new [note] and link to current" },
+						},
+						p = {
+							name = "Packer",
+							s = { function() vim.api.nvim_command(":PackerSync") end, "Packer Sync" },
+							c = { function() vim.api.nvim_command(":PackerCompile") end, "Packer compile" },
+							l = { function() vim.api.nvim_command(":PackerClean") end, "Packer Clean" },
+						},
+					},
+					-- Packer
+				},
+				{
+				}
+			)
+			wk.register(
+				{
+					-- Obsidiant
+					o = {
+						name = "Obsidiant Visual",
+						e = { function() vim.api.nvim_command(":ObsidianExtractNote") end, "Extract visual block to new note" },
+						l = { function() vim.api.nvim_command(":ObsidianLink") end, "To link an inline visual selection to a [NOTE]" },
+					},
+				},
+				{
+					prefix = "<leader>",
+					mode = "v",
+
+				}
+			)
+		end
+	}
 	
 	-- auto close delimiters
 	use {
@@ -223,7 +331,9 @@ require('packer').startup(function()
 					"svelte",
 					"typescript",
 					"javascript",
-					"vue"
+					"vue",
+					"markdown",
+					"markdown_inline",
 				}
 			}
 
@@ -237,23 +347,6 @@ require('packer').startup(function()
 			}
 		end
 	}
-
-	-- LSP
-	-- use {
-	-- 	"williamboman/mason.nvim",
-	-- 	"williamboman/mason-lspconfig.nvim",
-	-- 	'neovim/nvim-lspconfig'
-	-- }
-	-- use {"ms-jpq/coq_nvim", branch = "coq"}
-    -- use {"ms-jpq/coq.artifacts", branch = 'artifacts'}
-
---	use {
---		"kawre/neotab.nvim",
---		event = "InsertEnter",
---		config = function()
---			require('neotab').setup {}
---		end
---	}
 
 
 	use {
@@ -274,7 +367,6 @@ require('packer').startup(function()
 		}
 	}
 
-	-- DEPRECATED use outline use 'simrat39/symbols-outline.nvim'
 	use {
 		"hedyhli/outline.nvim",
 		config = function()
@@ -301,56 +393,11 @@ require('packer').startup(function()
 	}
 	
 	-- consider
-	-- https://github.com/fedepujol/move.nvim
 	-- https://github.com/alexghergh/nvim-tmux-navigation
 	-- https://github.com/tpope/vim-dadbod
 	-- https://github.com/tpope/vim-distant
 	-- https://github.com/brooth/far.vim
 
-	-- use {
-	-- 	'abecodes/tabout.nvim',
-	-- 	config = function()
-	-- 		require('tabout').setup {
-	-- 			tabkey = "<Tab>",
-	-- 			backward_tabkey = "<S-Tab>",
-	-- 			tabouts = {
-	-- 				{open = "'", close = "'"},
-	-- 				{open = '"', close = '"'},
-	-- 				{open = '`', close = '`'},
-	-- 				{open = '(', close = ')'},
-	-- 				{open = '[', close = ']'},
-	-- 				{open = '{', close = '}'},
-	-- 				{open = '<', close = '>'}
-	-- 			},
-	-- 		}
-	-- 		-- Plugin: tabout with auto completetion
-	-- 		-- ====================================
-	-- 		local function replace_keycodes(str)
-	-- 			return vim.api.nvim_replace_termcodes(str, true, true, true)
-	-- 		end
-
-	-- 		function _G.tab_binding()
-	-- 			if vim.fn.pumvisible() ~= 0 then
-	-- 				return replace_keycodes("<C-n>")
-	-- 			else
-	-- 				return replace_keycodes("<Plug>(Tabout)")
-	-- 			end
-	-- 		end
-
-	-- 		function _G.s_tab_binding()
-	-- 			if vim.fn.pumvisible() ~= 0 then
-	-- 				return replace_keycodes("<C-p>")
-	-- 			else
-	-- 				return replace_keycodes("<Plug>(TaboutBack)")
-	-- 			end
-	-- 		end
-
-	-- 		vim.api.nvim_set_keymap("i", "<Tab>", "v:lua.tab_binding()", {expr = true})
-	-- 		vim.api.nvim_set_keymap("i", "<S-Tab>", "v:lua.s_tab_binding()", {expr = true})
-	-- 	end,
-	-- 	wants = {'nvim-treesitter'}, -- or require if not used so far
-	-- 	after = {'nvim-cmp'}
-	-- }
 
 
 	-- ollama

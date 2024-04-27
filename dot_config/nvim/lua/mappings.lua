@@ -73,6 +73,8 @@ map('n', '<leader>w', "<cmd>lua require'hop'.hint_words()<cr>")
 
 -- Plugin: whichkey
 -- ====================================
+map('n', '<C-Space>', ':WhichKey<CR>') -- space to command mode
+map('v', '<C-Space>', ':WhichKey<CR>') -- space to command mode
 
 -- Plugin: vim commentary
 -- ====================================

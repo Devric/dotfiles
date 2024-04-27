@@ -36,6 +36,8 @@ settings('w', 'cursorline', true)
 settings('w', 'cursorcolumn', true)
 settings('o', 'clipboard','unnamed,unnamedplus')
 
+settings('o', 'conceallevel',2)
+
 vim.opt.wildignore = '.svn,CVS,.git,*.o,*.a,*.class,*.mo,*.la,*.so,*.obj,*.swp,*.jpg,*.png,*.xpm,*.gif'
 
 

@@ -28,7 +28,12 @@ require('packer').startup(function()
 	use 'olimorris/onedarkpro.nvim'
 	
 	-- UI
-	use 'mbbill/undotree'
+	use { 
+		'mbbill/undotree' ,
+		config = function()
+		end
+	}
+
 	use 'yamatsum/nvim-cursorline'
 	use {
 		'nvim-lualine/lualine.nvim',
@@ -169,14 +174,14 @@ require('packer').startup(function()
 	use {
 		"ThePrimeagen/harpoon",
 		branch = "harpoon2",
-		requires = { {"nvim-lua/plenary.nvim"} },
+		requires = { "nvim-lua/plenary.nvim" },
 		config = function()
 			local harpoon = require "harpoon"
 
 			harpoon:setup()
 
 			vim.keymap.set("n", "<leader>a", function() harpoon:list():add() end)
-			vim.keymap.set("n", "<C-e>", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
+			vim.keymap.set("n", "<C-a>", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
 
 			-- Toggle previous & next buffers stored within Harpoon list
 			vim.keymap.set("n", "<S-Left>", function() harpoon:list():prev() end)
@@ -242,6 +247,14 @@ require('packer').startup(function()
 	-- use {"ms-jpq/coq_nvim", branch = "coq"}
     -- use {"ms-jpq/coq.artifacts", branch = 'artifacts'}
 
+--	use {
+--		"kawre/neotab.nvim",
+--		event = "InsertEnter",
+--		config = function()
+--			require('neotab').setup {}
+--		end
+--	}
+
 
 	use {
 		'VonHeikemen/lsp-zero.nvim',
@@ -256,8 +269,8 @@ require('packer').startup(function()
 			{'hrsh7th/cmp-nvim-lsp'},
 			{'hrsh7th/cmp-buffer'},
 			{'hrsh7th/cmp-path'},
-			-- {'L3MON4D3/LuaSnip'},
-			-- {'tami5/lspsaga.nvim'}
+			{'L3MON4D3/LuaSnip'},
+			{"kawre/neotab.nvim"},
 		}
 	}
 
@@ -294,50 +307,50 @@ require('packer').startup(function()
 	-- https://github.com/tpope/vim-distant
 	-- https://github.com/brooth/far.vim
 
-	use {
-		'abecodes/tabout.nvim',
-		config = function()
-			require('tabout').setup {
-				tabkey = "<Tab>",
-				backward_tabkey = "<S-Tab>",
-				tabouts = {
-					{open = "'", close = "'"},
-					{open = '"', close = '"'},
-					{open = '`', close = '`'},
-					{open = '(', close = ')'},
-					{open = '[', close = ']'},
-					{open = '{', close = '}'},
-					{open = '<', close = '>'}
-				},
-			}
-			-- Plugin: tabout with auto completetion
-			-- ====================================
-			local function replace_keycodes(str)
-				return vim.api.nvim_replace_termcodes(str, true, true, true)
-			end
+	-- use {
+	-- 	'abecodes/tabout.nvim',
+	-- 	config = function()
+	-- 		require('tabout').setup {
+	-- 			tabkey = "<Tab>",
+	-- 			backward_tabkey = "<S-Tab>",
+	-- 			tabouts = {
+	-- 				{open = "'", close = "'"},
+	-- 				{open = '"', close = '"'},
+	-- 				{open = '`', close = '`'},
+	-- 				{open = '(', close = ')'},
+	-- 				{open = '[', close = ']'},
+	-- 				{open = '{', close = '}'},
+	-- 				{open = '<', close = '>'}
+	-- 			},
+	-- 		}
+	-- 		-- Plugin: tabout with auto completetion
+	-- 		-- ====================================
+	-- 		local function replace_keycodes(str)
+	-- 			return vim.api.nvim_replace_termcodes(str, true, true, true)
+	-- 		end
 
-			function _G.tab_binding()
-				if vim.fn.pumvisible() ~= 0 then
-					return replace_keycodes("<C-n>")
-				else
-					return replace_keycodes("<Plug>(Tabout)")
-				end
-			end
+	-- 		function _G.tab_binding()
+	-- 			if vim.fn.pumvisible() ~= 0 then
+	-- 				return replace_keycodes("<C-n>")
+	-- 			else
+	-- 				return replace_keycodes("<Plug>(Tabout)")
+	-- 			end
+	-- 		end
 
-			function _G.s_tab_binding()
-				if vim.fn.pumvisible() ~= 0 then
-					return replace_keycodes("<C-p>")
-				else
-					return replace_keycodes("<Plug>(TaboutBack)")
-				end
-			end
+	-- 		function _G.s_tab_binding()
+	-- 			if vim.fn.pumvisible() ~= 0 then
+	-- 				return replace_keycodes("<C-p>")
+	-- 			else
+	-- 				return replace_keycodes("<Plug>(TaboutBack)")
+	-- 			end
+	-- 		end
 
-			vim.api.nvim_set_keymap("i", "<Tab>", "v:lua.tab_binding()", {expr = true})
-			vim.api.nvim_set_keymap("i", "<S-Tab>", "v:lua.s_tab_binding()", {expr = true})
-		end,
-		wants = {'nvim-treesitter'}, -- or require if not used so far
-		after = {'nvim-cmp'}
-	}
+	-- 		vim.api.nvim_set_keymap("i", "<Tab>", "v:lua.tab_binding()", {expr = true})
+	-- 		vim.api.nvim_set_keymap("i", "<S-Tab>", "v:lua.s_tab_binding()", {expr = true})
+	-- 	end,
+	-- 	wants = {'nvim-treesitter'}, -- or require if not used so far
+	-- 	after = {'nvim-cmp'}
+	-- }
 
 
 	-- ollama

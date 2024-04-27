@@ -39,10 +39,10 @@ map('i', '<C-l>', '<C-o>l')
 
 -- Visual mode
 -- ====================================
-map('v', '<C-h>', '<ESC>v<<ESC>')  -- new tab
-map('v', '<C-l>', '<ESC>v><ESC>')  -- new tab
-map('v', '<', '<gv')  -- new tab
-map('v', '>', '>gv')  -- new tab
+map('v', '<C-h>', '<ESC>v<<ESC>')
+map('v', '<C-l>', '<ESC>v><ESC>')
+map('v', '<', '<gv')
+map('v', '>', '>gv')
 
 local tree ={}
 open = function ()
@@ -93,23 +93,14 @@ map('n', '<leader>B', "<CMD>FzfLua buffers<CR>")
 map('n', '<leader>g', "<cmd>lua require('fzf-lua').live_grep()<CR>")
 
 
--- Plugin: LSP, lspsaga, trouble, coq
+-- Plugin: LSP, trouble, coq
 -- ====================================
 -- See `:help vim.lsp.*` for documentation on any of the below functions
 map('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
--- map('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
-
--- LSP saga
-map('n', 'K', "<cmd>lua require('lspsaga.hover').render_hover_doc()<CR>", opts)
-map('n', 'gh', "<cmd>lua require'lspsaga.provider'.lsp_finder()<CR>", opts) -- lsp provider to find the cursor word definition and reference
-map('n', 'ga', "<cmd>lua require('lspsaga.codeaction').code_action()<CR>", opts) -- lsp provider to find the cursor word definition and reference
-map('n', 'gs', "<cmd>lua require('lspsaga.signaturehelp').signature_help()<CR>", opts) -- lsp provider to find the cursor word definition and reference
-map('n', 'gr', "<cmd>lua require('lspsaga.rename').rename()<CR>", opts) -- lsp provider to find the cursor word definition and reference
-map('n', 'gd', "<cmd>lua require('lspsaga.provider').preview_definition()<CR>", opts)
-
+map('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
 map('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
 map('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
--- map('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
+map('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
 map('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
 map('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
 

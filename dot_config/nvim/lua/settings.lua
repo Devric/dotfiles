@@ -11,6 +11,10 @@ local indent = 4
 cmd 'syntax enable'
 cmd 'filetype plugin indent on'
 
+
+-- b - Buffer
+-- o - Global
+-- w - Window
 settings('b', 'shiftwidth', indent)
 settings('b', 'tabstop', indent)
 settings('o', 'hidden', true) -- enable background buffers
@@ -33,7 +37,6 @@ settings('w', 'cursorcolumn', true)
 settings('o', 'clipboard','unnamed,unnamedplus')
 
 vim.opt.wildignore = '.svn,CVS,.git,*.o,*.a,*.class,*.mo,*.la,*.so,*.obj,*.swp,*.jpg,*.png,*.xpm,*.gif'
--- vim.cmd("let g:coq_settings = { 'auto_start': 'shut-up' }")
 
 
 -- splitkeep to replace stablize
@@ -43,10 +46,32 @@ vim.cmd('set splitkeep=screen')
 -- settings('b', 'expandtab', true) -- use space instead of tabs
 
 
+
+
+-- Memorise last postiion
+vim.api.nvim_create_autocmd({'BufWinEnter'}, {
+  desc = 'return cursor to where it was last time closing the file',
+  pattern = '*',
+  command = 'silent! normal! g`"zv',
+})
+
+
+
+
+-- UNDO persist
+vim.o.undofile = true -- Enable persistent undo history
+vim.o.undodir = '/tmp/undodir' -- Set the directory for undo files
+
+
 -- NOTE below ORDER matters
+
+
+
 
 -- HigC-- on yank
 vim.cmd 'au TextYankPost * lua vim.highlight.on_yank {on_visual = false}'
+
+
 
 
 -- transparent background go with the terminal transparency

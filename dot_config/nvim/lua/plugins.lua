@@ -90,9 +90,12 @@ require('packer').startup(function()
 				workspaces = {
 					{
 						name = "logseq",
-						path = "~/odrive/Dropbox/Apps/logseq/journals",
+						path = "~/odrive/Dropbox/Apps/logseq",
 					},
 				},
+
+				notes_subdir = "pages",
+
 				picker = {
 					name = "fzf-lua",
 					mappings = {
@@ -110,25 +113,26 @@ require('packer').startup(function()
   				},
 
 				daily_notes = {
+					folder = "journals",
 					-- Optional, if you want to change the date format for the ID of daily notes.
 					date_format = "%Y_%m_%d",
 				},
 
 				note_id_func = function(title)
-					-- Create note IDs in a Zettelkasten format with a timestamp and a suffix.
-					-- In this case a note with the title 'My new note' will be given an ID that looks
-					-- like '1657296016-my-new-note', and therefore the file name '1657296016-my-new-note.md'
+					-- Create note IDs with a timestamp and a suffix in the format {YYYY_MM_DD}-scrap-{title}.
 					local suffix = ""
+					local currentDate = os.date("%Y_%m_%d")
+
 					if title ~= nil then
-						-- If title is given, transform it into valid file name.
-						suffix = title:gsub(" ", "-"):gsub("[^A-Za-z0-9-]", ""):lower()
+						-- If title is given, transform it into a valid file name.
+						suffix = title:gsub("[ %-]", "_"):gsub("[^A-Za-z0-9_]", ""):lower()
 					else
 						-- If title is nil, just add 4 random uppercase letters to the suffix.
 						for _ = 1, 4 do
 							suffix = suffix .. string.char(math.random(65, 90))
 						end
 					end
-					return tostring(os.time()) .. "-" .. suffix
+					return currentDate .. "-scrap-" .. suffix
 				end,
 
 				mappings = {
@@ -155,6 +159,7 @@ require('packer').startup(function()
 		},
 		config = function() 
 			local wk = require("which-key")
+			local fzf = require('fzf-lua')
 
 
 			-- Required to init whikey
@@ -175,7 +180,16 @@ require('packer').startup(function()
 							-- :ObsidianWorkspace [NAME] to switch to another workspace.
 							-- :ObsidianPasteImg [IMGNAME] to paste an image from the clipboard into the note at the cursor position by saving it to the vault and adding a markdown image link. You can configure the default folder to save images to with the attachments.img_folder option.
 							name = "Obsidiant",
-							o = { function() vim.api.nvim_command(":ObsidianQuickSwitch") end, "Open Notes" },
+							o = {
+								function()
+									-- vim.api.nvim_command(":ObsidianQuickSwitch")
+									fzf.files({
+										cwd = "/Users/devric/odrive/Dropbox/Apps/logseq",
+										cmd = 'fd --type f  --exclude .svn --exclude .git --exclude .obsidian --exclude .DS_Store --exclude logseq/bak --exclude logseq/.recycle --exclude *.edn --exclude logseq/custom.css --exclude assets'
+									})
+								end,
+								"Open Notes",
+							},
 							n = { function() vim.api.nvim_command(":ObsidianNew") end, "New Notes [title]" },
 							t = { function() vim.api.nvim_command(":ObsidianTags") end, "Open Tag [tag]" },
 							b = { function() vim.api.nvim_command(":ObsidianBacklinks") end, "List Backlinks" },
@@ -250,7 +264,10 @@ require('packer').startup(function()
 			require"fzf-lua".setup({
 				-- "fzf-vim",
 				"fzf-native",
-				winopts={preview={default="bat"}}
+				winopts={preview={default="bat"}},
+				files = {
+					fd_opts = "--color=never --type f --hidden --follow --exclude .svn --exclude .git --exclude .obsidian --exclude .DS_Store --exclude logseq/bak --exclude logseq/.recycle --exclude *.edn --exclude logseq/custom.css"
+				},
 			})
 		end
 	}

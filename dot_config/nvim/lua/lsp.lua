@@ -156,6 +156,10 @@ cmp.setup({
 				latex_symbols = " LaT ~",
 				codeium       = "  AI ~",
 			})[entry.source.name]
+
+			-- Remove duplicates
+			vim_item.dup = 0
+
 			return vim_item
 		end
 	},

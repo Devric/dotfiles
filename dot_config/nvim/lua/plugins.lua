@@ -169,7 +169,7 @@ require('packer').startup(function()
 			wk.register(
 				{
 					[ "<C-Space>" ] = {
-						name = "AWESOME",
+						name = "   Secret Menu    ",
 						-- Obsidiant
 						o = {
 							-- :ObsidianYesterday to open/create the daily note for the previous working day.
@@ -199,14 +199,23 @@ require('packer').startup(function()
 							l = { function() vim.api.nvim_command(":ObsidianLinks") end, "Open links picker" },
 							L = { function() vim.api.nvim_command(":ObsidianLinkNew") end, "Create new [note] and link to current" },
 						},
+						-- Packer
 						p = {
 							name = "Packer",
 							s = { function() vim.api.nvim_command(":PackerSync") end, "Packer Sync" },
 							c = { function() vim.api.nvim_command(":PackerCompile") end, "Packer compile" },
 							l = { function() vim.api.nvim_command(":PackerClean") end, "Packer Clean" },
 						},
+
+						-- t = {
+						-- 	function()
+						-- 		print(vim.fn.expand("<cword>"))
+						-- 		fzf.files()
+						-- 	vim.fn.expand("<cword>")
+						-- 	end,
+						-- 	"test",
+						-- },
 					},
-					-- Packer
 				},
 				{
 				}
@@ -454,5 +463,3 @@ require('packer').startup(function()
 	end
 end)
 
---vim.o.background = "dark"
---require 'onedarkpro' .load()

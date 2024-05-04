@@ -4,20 +4,20 @@ local lsp_zero = require('lsp-zero')
 lsp_zero.extend_lspconfig()
 
 lsp_zero.on_attach(function(client, bufnr)
-  -- see :help lsp-zero-keybindings
-  -- to learn the available actions
-  lsp_zero.default_keymaps({buffer = bufnr})
+	-- see :help lsp-zero-keybindings
+	-- to learn the available actions
+	lsp_zero.default_keymaps({buffer = bufnr})
 end)
 
 
 -- Mason Auto LSP Download
 -- ==========================
 require("mason").setup {
-    ui = {
-        icons = {
-            package_installed = "✓"
-        }
-    }
+	ui = {
+		icons = {
+			package_installed = "✓"
+		}
+	}
 }
 
 require("mason-lspconfig").setup {
@@ -49,32 +49,32 @@ local luasnip = require('luasnip')
 local neotab = require('neotab')
 
 local kind_icons = {
-  Text = "",
-  Method = "󰆧",
-  Function = "󰊕",
-  Constructor = "",
-  Codeium = '󰁨',
-  Field = "󰇽",
-  Variable = "󰂡",
-  Class = "󰠱",
-  Interface = "",
-  Module = "",
-  Property = "󰜢",
-  Unit = "",
-  Value = "󰎠",
-  Enum = "",
-  Keyword = "󰌋",
-  Snippet = "",
-  Color = "󰏘",
-  File = "󰈙",
-  Reference = "",
-  Folder = "󰉋",
-  EnumMember = "",
-  Constant = "󰏿",
-  Struct = "",
-  Event = "",
-  Operator = "󰆕",
-  TypeParameter = "󰅲",
+	Text = "",
+	Method = "󰆧",
+	Function = "󰊕",
+	Constructor = "",
+	Codeium = '󰁨',
+	Field = "󰇽",
+	Variable = "󰂡",
+	Class = "󰠱",
+	Interface = "",
+	Module = "",
+	Property = "󰜢",
+	Unit = "",
+	Value = "󰎠",
+	Enum = "",
+	Keyword = "󰌋",
+	Snippet = "",
+	Color = "󰏘",
+	File = "󰈙",
+	Reference = "",
+	Folder = "󰉋",
+	EnumMember = "",
+	Constant = "󰏿",
+	Struct = "",
+	Event = "",
+	Operator = "󰆕",
+	TypeParameter = "󰅲",
 }
 
 neotab:setup()
@@ -99,7 +99,7 @@ cmp.setup({
 	},
 	mapping = {
 		['<CR>'] = cmp.mapping.confirm({select = false}),
-		['<C-y>'] = cmp.mapping.confirm({select = false}),
+		['<C-y>'] = cmp.mapping.confirm({select = true}),
 		['<C-e>'] = cmp.mapping.abort(),
 		['<Up>'] = cmp.mapping.select_prev_item({behavior = 'select'}),
 		['<Down>'] = cmp.mapping.select_next_item({behavior = 'select'}),
@@ -170,5 +170,30 @@ cmp.setup({
 			col_offset = -8
 		}),
 	},
+})
+
+-- search is handycaping the speed
+-- -- `/` cmdline setup.
+-- cmp.setup.cmdline('/', {
+-- 	mapping = cmp.mapping.preset.cmdline(),
+-- 	sources = {
+-- 		{ name = 'buffer' }
+-- 	}
+-- })
+
+
+-- `:` cmdline setup.
+cmp.setup.cmdline(':', {
+	mapping = cmp.mapping.preset.cmdline(),
+	sources = cmp.config.sources({
+		{ name = 'path' }
+	}, {
+			{
+				name = 'cmdline',
+				option = {
+					ignore_cmds = { 'Man', '!' }
+				}
+			}
+		})
 })
 

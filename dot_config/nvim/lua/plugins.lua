@@ -163,6 +163,7 @@ require('packer').startup(function()
 	use 'AndrewRadev/splitjoin.vim'
 	use 'editorconfig/editorconfig-vim'
 
+	
 	-- auto close delimiters
 	use {
 		"windwp/nvim-autopairs",

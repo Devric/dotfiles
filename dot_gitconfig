@@ -45,7 +45,12 @@
 
     serve  = "daemon --verbose --export-all --base-path=.git --reuseaddr --strict-paths .git/"
 
-        ;git flow
+	; Assumed untrack
+	assumed = ls-files -v | grep '^h'
+	assumed-add = update-index --assume-unchanged
+	assumed-del = update-index --no-assume-unchanged
+
+    ;git flow
     fi = flow init
     ffs = flow feature start
     fff = flow feature finish

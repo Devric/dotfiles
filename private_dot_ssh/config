@@ -1,0 +1,111 @@
+Include ~/.orbstack/ssh/config
+Include ~/.lima/dev-ubuntu/ssh.config
+
+# Chicago VPS
+Host VPS
+	HostName 172.245.106.134
+	User root
+	IdentityFile ~/.ssh/id_rsa_devric
+
+# ==============================================
+# Kubenetes K35
+# Pis agent 2 piS and 1 pi3, master 3 pi3
+# ==============================================
+Host A02
+	HostName 172.16.0.96
+	User root
+	IdentityFile ~/.ssh/id_rsa_devric
+Host A03
+	HostName 172.16.0.86
+	User root
+	IdentityFile ~/.ssh/id_rsa_devric
+Host A04
+	HostName 172.16.0.145
+	User devric
+	IdentityFile ~/.ssh/id_rsa_devric
+Host M01
+	HostName 172.16.0.175
+	User root
+	IdentityFile ~/.ssh/id_rsa_devric
+Host M02
+	HostName 172.16.0.232
+	User root
+	IdentityFile ~/.ssh/id_rsa_devric
+Host M03
+	HostName 172.16.0.155
+	User root
+	IdentityFile ~/.ssh/id_rsa_devric
+
+
+
+# ==============================================
+# BrainHop
+# ==============================================
+Host BRAINHOP_JH
+    HostName 10.1.1.1
+    User ubuntu
+    IdentityFile ~/Downloads/TA_LB.pem
+    ProxyCommand ssh -i ~/Downloads/TA_LB.pem -W %h:%p ubuntu@44.202.14.70
+
+Host BRAINHOP_LB
+    HostName 10.1.1.3
+    User ubuntu
+    IdentityFile ~/Downloads/TA_LB.pem
+    ProxyCommand ssh -i ~/Downloads/TA_LB.pem -W %h:%p ubuntu@44.202.14.70
+
+# Test Server
+Host BRAINHOP_TEST
+    HostName 10.4.1.1       # Internal server 2 IP
+    User ubuntu             # Login user
+    IdentityFile ~/Downloads/TA_TEST.pem  # Private key for this server
+    ProxyCommand ssh -i ~/Downloads/TA_LB.pem -W %h:%p ubuntu@3.26.208.172
+
+Host BRAINHOP_JUMP
+    HostName 3.26.208.172
+    User ubuntu
+    IdentityFile ~/.ssh/TA_LB.pem
+
+Host BRAINHOP_TEST_MAP
+    HostName 10.4.1.1
+    Port 3002
+    User ubuntu
+    IdentityFile ~/Downloads/TA_TEST.pem
+    ProxyCommand ssh -W %h:%p BRAINHOP_JUMP
+    LocalForward 9000 127.0.0.1:3002
+
+# AWS - Dev - PUS
+# This configuration sets up an SSH connection to the AWS Dev PUS server.
+# It forwards local port 3002 to remote host 10.4.1.1 on port 3002.
+Host BRAINHOP_AWS_MAP
+    HostName 3.26.208.172          # IP address of the remote server
+    User ubuntu                     # Username to log in as
+    IdentityFile ~/.ssh/TA_LB.pem  # Path to the private key file
+    LocalForward 3002 10.4.1.1:3002 # Forward local port 3002 to remote 10.4.1.1:3002
+    RequestTTY no                   # Do not allocate a TTY (useful for port forwarding)
+    ExitOnForwardFailure yes        # Exit if port forwarding fails
+    ServerAliveInterval 60          # Send a keep-alive packet every 60 seconds
+    ServerAliveCountMax 3           # Max number of keep-alive packets without a response
+    LogLevel VERBOSE                # Set logging level to VERBOSE
+
+# OnPrem - Dev - LLM API Service
+# This configuration sets up an SSH connection to the OnPrem Dev LLM API Service.
+# It forwards local port 8099 to remote host 10.50.1.112 on port 8099.
+Host BRAINHOP_PS_MAP
+    HostName 3.26.208.172           # IP address of the remote server
+    User ubuntu                     # Username to log in as
+    IdentityFile ~/.ssh/TA_LB.pem  # Path to the private key file
+    LocalForward 8099 10.50.1.112:8099 # Forward local port 8099 to remote 10.50.1.112:8099
+    RequestTTY no                   # Do not allocate a TTY (useful for port forwarding)
+    ExitOnForwardFailure yes        # Exit if port forwarding fails
+    ServerAliveInterval 60          # Send a keep-alive packet every 60 seconds
+    ServerAliveCountMax 3           # Max number of keep-alive packets without a response
+    LogLevel VERBOSE                # Set logging level to VERBOSE
+
+	
+# SIT Server
+Host BRAINHOP_SIT
+    HostName 10.3.1.1       # Internal server 2 IP
+    User ubuntu             # Login user
+    IdentityFile ~/.ssh/TA_SIT.pem  # Private key for this server
+    ProxyCommand ssh -W %h:%p BRAINHOP_JUMP
+

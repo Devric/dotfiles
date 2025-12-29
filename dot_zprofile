@@ -8,14 +8,15 @@ export PATH=/opt/local/bin:/opt/local/sbin:$PATH
 export PATH=/usr/local/share/npm/bin:$PATH
 export PATH=/Users/devric/bin/Sencha/Cmd/4.0.2.67:$PATH
 export NODE_PATH=/usr/local/lib/jsctags/:$NODE_PATH
-export ANDROID_HOME=${HOME}/Library/Android/sdk
-export PATH=${PATH}:${ANDROID_HOME}/tools
-export PATH=${PATH}:${ANDROID_HOME}/platform-tools
-export PATH="$PATH:/Users/devric/Sites/sdk/flutter/bin"
-export PATH="$PATH:/Users/devric/Site/sdk/flutter/bin"
+
+
+export JAVA_HOME=/Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home
+export ANDROID_HOME=$HOME/Library/Android/sdk
+export PATH=$PATH:$ANDROID_HOME/emulator
+export PATH=$PATH:$ANDROID_HOME/platform-tools
 
 # PET
-export PET_GITHUB_ACCESS_TOKEN=$(pass dot/pet/PET_GITHUB_ACCESS_TOKEN)
+# export PET_GITHUB_ACCESS_TOKEN=$(pass dot/pet/PET_GITHUB_ACCESS_TOKEN)
 export EDITOR='nvim'
 
 #source ~/odrive/Dropbox/dotfiles/bash/terminal-pimp
@@ -323,24 +324,6 @@ function recursiveReplace() {
     find . -type f -exec sed -i '' -e "s/$1/$2/g" {} +
 }
 
-## Replaced by jenv http://www.jenv.be/
-## # JDK versions
-## # EG:  setdjk 1.7
-## function setjdk() {
-##   if [ $# -ne 0 ]; then
-##    removeFromPath '/System/Library/Frameworks/JavaVM.framework/Home/bin'
-##    if [ -n "${JAVA_HOME+x}" ]; then
-##     removeFromPath $JAVA_HOME
-##    fi
-##    export JAVA_HOME=`/usr/libexec/java_home -v $@`
-##    export PATH=$JAVA_HOME/bin:$PATH
-##   fi
-##   echo JAVA_HOME set to $JAVA_HOME
-##   java -version
-## }
-## 
-# export PATH="$HOME/.jenv/bin:$PATH"
-# eval "$(jenv init -)"
 
 # get folder size of currenty directory
 foldersize() {
@@ -387,3 +370,66 @@ bindkey '^U' backward-kill-line
 
 # Added by OrbStack: command-line tools and integration
 source ~/.orbstack/shell/init.zsh 2>/dev/null || :
+
+
+#  Select ssh config
+ssc() {
+	# Check if the SSH config file exists
+	if [[ ! -f ~/.ssh/config ]]; then
+		echo "No SSH config file found at ~/.ssh/config"
+		return 1
+	fi
+	
+	# Extract host names from the SSH config file
+	hosts=()
+	while IFS= read -r line; do
+		if [[ $line =~ ^[[:space:]]*Host[[:space:]]+ ]]; then
+			host=$(echo "$line" | awk '{print $2}')
+			# Skip wildcard entries
+			if [[ ! "$host" == *\** ]]; then
+				hosts+=("$host")
+			fi
+		fi
+	done < ~/.ssh/config
+	
+	# Check if any hosts were found
+	if [[ ${#hosts[@]} -eq 0 ]]; then
+		echo "No hosts found in ~/.ssh/config"
+		return 1
+	fi
+	
+	# Use fzf if available, otherwise fall back to numbered list
+	if command -v fzf >/dev/null 2>&1; then
+		selected_host=$(printf "%s\n" "${hosts[@]}" | fzf --height 40% --reverse --prompt="Select SSH host: ")
+		
+		# Check if a host was selected
+		if [[ -z "$selected_host" ]]; then
+			echo "No host selected"
+			return 1
+		fi
+	else
+		# Display the list of hosts with formatted numbers
+		echo "Available SSH hosts:"
+		for ((i=0; i<${#hosts[@]}; i++)); do
+			# %03d gives 2 digit leading 0 paddings. 001, 002, 010
+			echo "$(printf '%03d' $((i+1))) - ${hosts[$i]}"
+		done
+		
+		# Prompt the user to select a host
+		echo -n "Select a host by number: "
+		read selection
+		
+		# Validate the selection
+		if ! [[ $selection =~ ^[0-9]+$ ]] || [[ $selection -lt 1 || $selection -gt ${#hosts[@]} ]]; then
+			echo "Invalid selection"
+			return 1
+		fi
+		
+		# Get the selected host
+		selected_host="${hosts[$((selection-1))]}"
+	fi
+	
+	# Execute the SSH command for the selected host
+	echo "Connecting to $selected_host..."
+	ssh "$selected_host"
+}
